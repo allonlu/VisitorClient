@@ -7,6 +7,7 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "VisitorClientController.h"
 
 //! Project version number for VisitorClient.
 FOUNDATION_EXPORT double VisitorClientVersionNumber;

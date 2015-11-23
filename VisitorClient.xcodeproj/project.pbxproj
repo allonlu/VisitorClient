@@ -6,14 +6,32 @@
 	objectVersion = 46;
 	objects = {
 
+/* Begin PBXAggregateTarget section */
+		9A687D3B1BC7A30D0095BDAF /* Aggregate */ = {
+			isa = PBXAggregateTarget;
+			buildConfigurationList = 9A687D3C1BC7A30D0095BDAF /* Build configuration list for PBXAggregateTarget "Aggregate" */;
+			buildPhases = (
+				9A687D3F1BC7A3160095BDAF /* ShellScript */,
+			);
+			dependencies = (
+			);
+			name = Aggregate;
+			productName = Aggregate;
+		};
+/* End PBXAggregateTarget section */
+
 /* Begin PBXBuildFile section */
 		9A687D301BC7A2910095BDAF /* VisitorClient.h in Headers */ = {isa = PBXBuildFile; fileRef = 9A687D2F1BC7A2910095BDAF /* VisitorClient.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		9A687D391BC7A2BB0095BDAF /* VisitorClientController.h in Headers */ = {isa = PBXBuildFile; fileRef = 9A687D371BC7A2BB0095BDAF /* VisitorClientController.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		9A687D3A1BC7A2BB0095BDAF /* VisitorClientController.m in Sources */ = {isa = PBXBuildFile; fileRef = 9A687D381BC7A2BB0095BDAF /* VisitorClientController.m */; settings = {ASSET_TAGS = (); }; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
 		9A687D2C1BC7A2910095BDAF /* VisitorClient.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = VisitorClient.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		9A687D2F1BC7A2910095BDAF /* VisitorClient.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = VisitorClient.h; sourceTree = "<group>"; };
 		9A687D311BC7A2920095BDAF /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		9A687D371BC7A2BB0095BDAF /* VisitorClientController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VisitorClientController.h; sourceTree = "<group>"; };
+		9A687D381BC7A2BB0095BDAF /* VisitorClientController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = VisitorClientController.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -47,6 +65,8 @@
 			isa = PBXGroup;
 			children = (
 				9A687D2F1BC7A2910095BDAF /* VisitorClient.h */,
+				9A687D371BC7A2BB0095BDAF /* VisitorClientController.h */,
+				9A687D381BC7A2BB0095BDAF /* VisitorClientController.m */,
 				9A687D311BC7A2920095BDAF /* Info.plist */,
 			);
 			path = VisitorClient;
@@ -60,6 +80,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				9A687D301BC7A2910095BDAF /* VisitorClient.h in Headers */,
+				9A687D391BC7A2BB0095BDAF /* VisitorClientController.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -96,6 +117,9 @@
 					9A687D2B1BC7A2910095BDAF = {
 						CreatedOnToolsVersion = 7.0;
 					};
+					9A687D3B1BC7A30D0095BDAF = {
+						CreatedOnToolsVersion = 7.0;
+					};
 				};
 			};
 			buildConfigurationList = 9A687D261BC7A2910095BDAF /* Build configuration list for PBXProject "VisitorClient" */;
@@ -111,6 +135,7 @@
 			projectRoot = "";
 			targets = (
 				9A687D2B1BC7A2910095BDAF /* VisitorClient */,
+				9A687D3B1BC7A30D0095BDAF /* Aggregate */,
 			);
 		};
 /* End PBXProject section */
@@ -125,11 +150,28 @@
 		};
 /* End PBXResourcesBuildPhase section */
 
+/* Begin PBXShellScriptBuildPhase section */
+		9A687D3F1BC7A3160095BDAF /* ShellScript */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "# Sets the target folders and the final framework product.\n# 如果工程名称和Framework的Target名称不一样的话，要自定义FMKNAME\n# 例如: FMK_NAME = \"MyFramework\"\nFMK_NAME=${PROJECT_NAME}\n# Install dir will be the final output to the framework.\n# The following line create it in the root folder of the current project.\nINSTALL_DIR=${SRCROOT}/Products/${FMK_NAME}.framework\n# Working dir will be deleted after the framework creation.\nWRK_DIR=build\nDEVICE_DIR=${WRK_DIR}/Release-iphoneos/${FMK_NAME}.framework\nSIMULATOR_DIR=${WRK_DIR}/Release-iphonesimulator/${FMK_NAME}.framework\n# -configuration ${CONFIGURATION}\n# Clean and Building both architectures.\nxcodebuild -configuration \"Release\" -target \"${FMK_NAME}\" -sdk iphoneos clean build\nxcodebuild -configuration \"Release\" -target \"${FMK_NAME}\" -sdk iphonesimulator clean build\n# Cleaning the oldest.\nif [ -d \"${INSTALL_DIR}\" ]\nthen\nrm -rf \"${INSTALL_DIR}\"\nfi\nmkdir -p \"${INSTALL_DIR}\"\ncp -R \"${DEVICE_DIR}/\" \"${INSTALL_DIR}/\"\n# Uses the Lipo Tool to merge both binary files (i386 + armv6/armv7) into one Universal final product.\nlipo -create \"${DEVICE_DIR}/${FMK_NAME}\" \"${SIMULATOR_DIR}/${FMK_NAME}\" -output \"${INSTALL_DIR}/${FMK_NAME}\"\nrm -r \"${WRK_DIR}\"\nopen \"${INSTALL_DIR}\"";
+		};
+/* End PBXShellScriptBuildPhase section */
+
 /* Begin PBXSourcesBuildPhase section */
 		9A687D271BC7A2910095BDAF /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				9A687D3A1BC7A2BB0095BDAF /* VisitorClientController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -233,7 +275,9 @@
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
 				INFOPLIST_FILE = VisitorClient/Info.plist;
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				IPHONEOS_DEPLOYMENT_TARGET = 6.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				MACH_O_TYPE = staticlib;
 				PRODUCT_BUNDLE_IDENTIFIER = com.comm100.livechat.VisitorClient;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
@@ -249,10 +293,26 @@
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
 				INFOPLIST_FILE = VisitorClient/Info.plist;
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				IPHONEOS_DEPLOYMENT_TARGET = 6.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				MACH_O_TYPE = staticlib;
 				PRODUCT_BUNDLE_IDENTIFIER = com.comm100.livechat.VisitorClient;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
+			};
+			name = Release;
+		};
+		9A687D3D1BC7A30D0095BDAF /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Debug;
+		};
+		9A687D3E1BC7A30D0095BDAF /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
 			name = Release;
 		};
@@ -273,6 +333,14 @@
 			buildConfigurations = (
 				9A687D351BC7A2920095BDAF /* Debug */,
 				9A687D361BC7A2920095BDAF /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+		};
+		9A687D3C1BC7A30D0095BDAF /* Build configuration list for PBXAggregateTarget "Aggregate" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				9A687D3D1BC7A30D0095BDAF /* Debug */,
+				9A687D3E1BC7A30D0095BDAF /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 		};
